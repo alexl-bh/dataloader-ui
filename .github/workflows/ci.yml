@@ -10,13 +10,29 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest]
-
     runs-on: ${{ matrix.os }}
-
-    steps:    
+    steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@latest
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Run lint
+        run: yarn lint
+      
       - name: Code signing with Software Trust Manager
         uses: digicert/ssm-code-signing@v1.1.1
 
@@ -24,25 +40,15 @@ jobs:
         run: echo "${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/Certificate_pkcs12.p12
         shell: bash
 
-      - name: Run smctl healthcheck
+      - name: Package application (Windows)
+        if: matrix.os == 'windows-latest'
         env:
+          DEBUG: electron-builder
           SM_HOST: https://clientauth.one.digicert.com/
           SM_API_KEY: ${{ secrets.SM_API_KEY }}
           SM_CLIENT_CERT_FILE: D:\\Certificate_pkcs12.p12
           SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
-        run: smctl windows certsync --keypair-alias=${{ secrets.SM_KEYPAIR_ALIAS }}
-
-#      - name: Package application (Windows)
-#        if: matrix.os == 'windows-latest'
-#        env:
-#          DEBUG: electron-builder
-#          SM_HOST: https://clientauth.one.digicert.com/
-#          SM_API_KEY: ${{ secrets.SM_API_KEY }}
-#          SM_CLIENT_CERT_FILE: D:\\Certificate_pkcs12.p12
-#          SM_CLIENT_CERT_FILE_B64: ${{ secrets.SM_CLIENT_CERT_FILE_B64 }}
-#          SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
-#        run: |
-#          Set-Content -Path "client_cert_base64.txt" -Value $env:SM_CLIENT_CERT_FILE_BASE64
-#          certutil -decode "client_cert_base64.txt" "$env:SM_CLIENT_CERT_FILE"
-#          smctl healthcheck
-#        timeout-minutes: 90
+        run: |
+          smctl windows certsync --keypair-alias=${{ secrets.SM_KEYPAIR_ALIAS }}
+          yarn package:win
+        timeout-minutes: 90
