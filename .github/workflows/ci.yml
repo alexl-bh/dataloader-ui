@@ -51,6 +51,6 @@ jobs:
           WIN_CSC_LINK: D:\\signing_certificate.p12
         run: |
           smctl windows certsync --keypair-alias=${{ secrets.SM_KEYPAIR_ALIAS }}
-          smctl cert download --keypair-alias=${{ secrets.SM_KEYPAIR_ALIAS }} --format p12 --out D:\\ --name signing_certificate.p12
+          smctl cert download --keypair-alias=${{ secrets.SM_KEYPAIR_ALIAS }} --password ${{ secrets.WIN_CSC_KEY_PASSWORD }} --format p12 --out D:\\ --name signing_certificate.p12
           yarn package:win
         timeout-minutes: 90
