@@ -25,8 +25,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Code signing with Software Trust Manager
-        uses: digicert/ssm-code-signing@v1.1.1
+#      - name: Code signing with Software Trust Manager
+#        uses: digicert/ssm-code-signing@v1.1.1
 
       - name: Package application (Windows)
         if: matrix.os == 'windows-latest'
