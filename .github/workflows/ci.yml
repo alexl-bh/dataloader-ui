@@ -32,14 +32,13 @@ jobs:
         if: matrix.os == 'windows-latest'
         env:
           DEBUG: electron-builder
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          SM_HOST: ${{ secrets.SM_HOST }}
+          SM_HOST: https://clientauth.one.digicert.com/
           SM_API_KEY: ${{ secrets.SM_API_KEY }}
           SM_CLIENT_CERT_FILE: D:\\Certificate_pkcs12.p12
           SM_CLIENT_CERT_FILE_B64: ${{ secrets.SM_CLIENT_CERT_FILE_B64 }}
           SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
-          SM_KEYPAIR_ALIAS: ${{ secrets.SM_KEYPAIR_ALIAS }}
         run: |
           echo %SM_CLIENT_CERT_FILE_B64% > client_cert_base64.txt
           certutil -decode client_cert_base64.txt %SM_CLIENT_CERT_FILE%
+          smctl healthcheck
         timeout-minutes: 90
