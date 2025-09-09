@@ -28,7 +28,7 @@ jobs:
 #      - name: Code signing with Software Trust Manager
 #        uses: digicert/ssm-code-signing@v1.1.1
 
-      - name: Package application (Windows)
+      - name: Setup DigiCert Client Authentication
         if: matrix.os == 'windows-latest'
         env:
           DEBUG: electron-builder
@@ -38,7 +38,21 @@ jobs:
           SM_CLIENT_CERT_FILE_B64: ${{ secrets.SM_CLIENT_CERT_FILE_B64 }}
           SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
         run: |
-          Set-Content -Path "client_cert_base64.txt" -Value $env:SM_CLIENT_CERT_FILE_BASE64
-          certutil -decode "client_cert_base64.txt" "$env:SM_CLIENT_CERT_FILE"
-          smctl healthcheck
-        timeout-minutes: 90
+          echo %SM_CLIENT_CERT_FILE_BASE64% > client_cert_base64.txt
+          certutil -decode client_cert_base64.txt %SM_CLIENT_CERT_FILE%
+        shell: cmd
+
+#      - name: Package application (Windows)
+#        if: matrix.os == 'windows-latest'
+#        env:
+#          DEBUG: electron-builder
+#          SM_HOST: https://clientauth.one.digicert.com/
+#          SM_API_KEY: ${{ secrets.SM_API_KEY }}
+#          SM_CLIENT_CERT_FILE: D:\\Certificate_pkcs12.p12
+#          SM_CLIENT_CERT_FILE_B64: ${{ secrets.SM_CLIENT_CERT_FILE_B64 }}
+#          SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
+#        run: |
+#          Set-Content -Path "client_cert_base64.txt" -Value $env:SM_CLIENT_CERT_FILE_BASE64
+#          certutil -decode "client_cert_base64.txt" "$env:SM_CLIENT_CERT_FILE"
+#          smctl healthcheck
+#        timeout-minutes: 90
