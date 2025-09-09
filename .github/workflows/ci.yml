@@ -30,7 +30,7 @@ jobs:
           SM_API_KEY: ${{ secrets.SM_API_KEY }}
           SM_CLIENT_CERT_FILE: D:\\Certificate_pkcs12.p12
           SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
-        run: smctl healthcheck
+        run: smctl windows certsync --keypair-alias=${{ secret.SM_KEYPAIR_ALIAS }}
 
 #      - name: Package application (Windows)
 #        if: matrix.os == 'windows-latest'
