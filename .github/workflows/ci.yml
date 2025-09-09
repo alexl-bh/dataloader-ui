@@ -38,7 +38,7 @@ jobs:
           SM_CLIENT_CERT_FILE_B64: ${{ secrets.SM_CLIENT_CERT_FILE_B64 }}
           SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
         run: |
-          echo %SM_CLIENT_CERT_FILE_B64% > client_cert_base64.txt
-          certutil -decode client_cert_base64.txt %SM_CLIENT_CERT_FILE%
+          Set-Content -Path "client_cert_base64.txt" -Value $env:SM_CLIENT_CERT_FILE_BASE64
+          certutil -decode "client_cert_base64.txt" "$env:SM_CLIENT_CERT_FILE"
           smctl healthcheck
         timeout-minutes: 90
