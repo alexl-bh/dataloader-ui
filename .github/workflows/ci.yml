@@ -28,10 +28,17 @@ jobs:
       - name: Code signing with Software Trust Manager
         uses: digicert/ssm-code-signing@v1.1.1
 
-      - name: Set up certificate 
-        run: | 
-          echo "${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/Certificate_pkcs12.p12 
+      - name: Set up client auth certificate 
+        run: echo "${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/Certificate_pkcs12.p12
         shell: bash
+
+      - name: Run smctl healthcheck
+        env:
+          SM_HOST: https://clientauth.one.digicert.com/
+          SM_API_KEY: ${{ secrets.SM_API_KEY }}
+          SM_CLIENT_CERT_FILE: D:\\Certificate_pkcs12.p12
+          SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
+        run: smctl healthcheck
 
 #      - name: Package application (Windows)
 #        if: matrix.os == 'windows-latest'
