@@ -40,6 +40,8 @@ jobs:
         run: echo "${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/Certificate_pkcs12.p12
         shell: bash
 
+      - name: Download the signing certificate
+        run: 
       - name: Package application (Windows)
         if: matrix.os == 'windows-latest'
         env:
@@ -48,7 +50,10 @@ jobs:
           SM_API_KEY: ${{ secrets.SM_API_KEY }}
           SM_CLIENT_CERT_FILE: D:\\Certificate_pkcs12.p12
           SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
+          WIN_CSC_LINK: D:\\signing_certificate.p12
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
         run: |
           smctl windows certsync --keypair-alias=${{ secrets.SM_KEYPAIR_ALIAS }}
+          smctl cert download --keypair-alias=${{ secrets.SM_KEYPAIR_ALIAS }} --password ${{ secrets.WIN_CSC_KEY_PASSWORD }} --format p12 --out D:\\ --name signing_certificate.p12
           yarn package:win
         timeout-minutes: 90
