@@ -49,6 +49,7 @@ jobs:
           SM_CLIENT_CERT_FILE: D:\\Certificate_pkcs12.p12
           SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
           WIN_CSC_LINK: D:\\signing_certificate.p12
+          WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
         run: |
           smctl windows certsync --keypair-alias=${{ secrets.SM_KEYPAIR_ALIAS }}
           smctl cert download --keypair-alias=${{ secrets.SM_KEYPAIR_ALIAS }} --password ${{ secrets.WIN_CSC_KEY_PASSWORD }} --format p12 --out D:\\ --name signing_certificate.p12
