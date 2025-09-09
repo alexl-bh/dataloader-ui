@@ -25,6 +25,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Code signing with Software Trust Manager
+        uses: digicert/ssm-code-signing@v1.1.1
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
