@@ -40,6 +40,6 @@ jobs:
           SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
           SM_KEYPAIR_ALIAS: ${{ secrets.SM_KEYPAIR_ALIAS }}
         run: |
-          echo %SM_CLIENT_CERT_FILE_BASE64% > client_cert_base64.txt
+          echo %SM_CLIENT_CERT_FILE_B64% > client_cert_base64.txt
           certutil -decode client_cert_base64.txt %SM_CLIENT_CERT_FILE%
         timeout-minutes: 90
