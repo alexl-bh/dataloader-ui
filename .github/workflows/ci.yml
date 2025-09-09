@@ -25,22 +25,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-#      - name: Code signing with Software Trust Manager
-#        uses: digicert/ssm-code-signing@v1.1.1
+      - name: Code signing with Software Trust Manager
+        uses: digicert/ssm-code-signing@v1.1.1
 
-      - name: Setup DigiCert Client Authentication
-        if: matrix.os == 'windows-latest'
-        env:
-          DEBUG: electron-builder
-          SM_HOST: https://clientauth.one.digicert.com/
-          SM_API_KEY: ${{ secrets.SM_API_KEY }}
-          SM_CLIENT_CERT_FILE: D:\\Certificate_pkcs12.p12
-          SM_CLIENT_CERT_FILE_B64: ${{ secrets.SM_CLIENT_CERT_FILE_B64 }}
-          SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
-        run: |
-          echo %SM_CLIENT_CERT_FILE_BASE64% > client_cert_base64.txt
-          certutil -decode client_cert_base64.txt %SM_CLIENT_CERT_FILE%
-        shell: cmd
+      - name: Set up certificate 
+        run: | 
+          echo "${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/Certificate_pkcs12.p12 
+        shell: bash
 
 #      - name: Package application (Windows)
 #        if: matrix.os == 'windows-latest'
