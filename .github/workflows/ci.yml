@@ -6,6 +6,12 @@ on:
     tags: [ 'v*' ]
   pull_request:
     branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag'
+        required: true
+        default: 'v1.0.0'
 
 jobs:
   build:
@@ -18,6 +24,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Code signing with Software Trust Manager
+        uses: digicert/ssm-code-signing@v1.1.1
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -56,5 +65,16 @@ jobs:
           WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
           WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
           WIN_CSC_PUBLISHER_NAME: ${{ secrets.WIN_CSC_PUBLISHER_NAME }}
-        run: yarn package:win
+          SM_HOST: ${{ secrets.SM_HOST }}
+          SM_API_KEY: ${{ secrets.SM_API_KEY }}
+          SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
+          SM_KEYPAIR_ALIAS: ${{ secrets.SM_KEYPAIR_ALIAS }}
+          SM_CLIENT_CERT_FILE_B64: ${{ secrets.SM_CLIENT_CERT_FILE_B64 }}
+          SM_CLIENT_CERT_FILE: D:\\Certificate_pkcs12.p12
+        run: |
+          echo %SM_CLIENT_CERT_FILE_B64% > cert_base64.txt
+          certutil -decode cert_base64.txt D:\Certificate_pkcs12.p12
+          del cert_base64.txt
+          smctl windows certsync --keypair-alias=${{ secrets.SM_KEYPAIR_ALIAS }}
+          yarn package:win
         timeout-minutes: 90
