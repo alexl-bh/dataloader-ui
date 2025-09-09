@@ -48,9 +48,9 @@ jobs:
           SM_API_KEY: ${{ secrets.SM_API_KEY }}
           SM_CLIENT_CERT_FILE: D:\\Certificate_pkcs12.p12
           SM_CLIENT_CERT_PASSWORD: ${{ secrets.SM_CLIENT_CERT_PASSWORD }}
-          WIN_CSC_LINK: D:\\signing_certificate.pfx
+          WIN_CSC_LINK: D:\\signing_certificate.p12
         run: |
           smctl windows certsync --keypair-alias=${{ secrets.SM_KEYPAIR_ALIAS }}
-          smctl cert download --keypair-alias=${{ secrets.SM_KEYPAIR_ALIAS }} --format pfx --out D:\\ --name signing_certificate.pfx
+          smctl cert download --keypair-alias=${{ secrets.SM_KEYPAIR_ALIAS }} --format p12 --out D:\\ --name signing_certificate.p12
           yarn package:win
         timeout-minutes: 90
