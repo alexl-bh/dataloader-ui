@@ -55,8 +55,6 @@ jobs:
         run: yarn package:mac
         timeout-minutes: 90
 
-
-
       - name: Package application (Windows)
         if: matrix.os == 'windows-latest'
         env:
@@ -71,7 +69,7 @@ jobs:
           SM_CLIENT_CERT_FILE_B64: ${{ secrets.SM_CLIENT_CERT_FILE_B64 }}
           SM_CLIENT_CERT_FILE: D:\\Certificate_pkcs12.p12
         run: |
-          echo "${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/Certificate_pkcs12.p12 
+          echo %SM_CLIENT_CERT_FILE_B64% | certutil -decode -f - "D:\Certificate_pkcs12.p12"
           smctl windows certsync --keypair-alias=${{ secrets.SM_KEYPAIR_ALIAS }}
           yarn package:win
         timeout-minutes: 90
