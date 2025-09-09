@@ -2,22 +2,14 @@ name: CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, new-branch ]
     tags: [ 'v*' ]
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version tag'
-        required: true
-        default: 'v1.0.0'
 
 jobs:
   build:
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [windows-latest]
 
     runs-on: ${{ matrix.os }}
 
